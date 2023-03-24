@@ -1,0 +1,24 @@
+//Esta macro cria um journal com todas as variáveis de um personagem e de rolagem atreladas a um token. Basta selecionar um token, executar a macro e o journal será criado.
+// SELECIONE UM TOKEN
+const char = flattenObject({system: actor.system.toObject() });
+let charHtml = '<table>';
+for (let [key, value] of Object.entries(char)  ) {
+  charHtml += `<tr><td>${key}</td><td>${value}</td></tr>`;
+}
+charHtml += '</table>';
+
+const rollData = flattenObject(actor.getRollData());
+let rollDataHtml = '<table>';
+for (let [key, value] of Object.entries(rollData)  ) {
+  rollDataHtml += `<tr><td>@${key}</td><td>${value}</td></tr>`;
+}
+rollDataHtml += '</table>';
+
+let jrnl = await JournalEntry.create({"name":"Tormenta20 Variaveis"});
+
+const pages = [
+  {name:"Vars. de Personagem", type:"text", text: {content: charHtml }},
+  {name:"Vars. de Rolagem", type:"text", text: {content: rollDataHtml }}
+];
+
+await jrnl.createEmbeddedDocuments("JournalEntryPage", pages);
